@@ -19,6 +19,16 @@ class Detector(nn.Module):
         self.neck = build_neck(config.model.neck)
         self.head = build_head(config.model.head)
 
+        if hasattr(config.model, 'seg_neck'):
+            self.seg_neck = build_neck(config.model.seg_neck)
+        else:
+            self.seg_neck = nn.Identity()
+
+        if hasattr(config.model, 'seg_head'):
+            self.seg_head = build_head(config.model.seg_head)
+        else:
+            self.seg_head = nn.Identity()
+
         self.config = config
 
     def init_bn(self, M):
@@ -35,6 +45,12 @@ class Detector(nn.Module):
         self.backbone.init_weights()
         self.neck.init_weights()
         self.head.init_weights()
+
+        if hasattr(self.seg_neck, 'init_weights'):
+            self.seg_neck.init_weights()
+        
+        if hasattr(self.seg_neck, 'init_weights'):
+            self.seg_neck.init_weights()
 
     def load_pretrain_detector(self, pretrain_model):
 
@@ -55,6 +71,8 @@ class Detector(nn.Module):
         feature_outs = self.backbone(images.tensors)  # list of tensor
         fpn_outs = self.neck(feature_outs)
 
+        seg_neck_outs = self.seg_neck(feature_outs)
+
         if tea:
             return fpn_outs
         else:
@@ -63,10 +81,13 @@ class Detector(nn.Module):
                 targets,
                 imgs=images,
             )
+            seg_outputs = self.seg_head(
+                seg_neck_outs
+            )
             if stu:
-                return outputs, fpn_outs
+                return outputs, fpn_outs, seg_outputs
             else:
-                return outputs
+                return outputs, seg_outputs
 
 
 def build_local_model(config, device):

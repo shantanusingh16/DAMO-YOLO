@@ -94,8 +94,8 @@ class GiraffeNeckV2(nn.Module):
             Tuple[Tensor]: FPN feature.
         """
 
-        #  backbone
-        [x2, x1, x0] = out_features
+        #  backbone 
+        [x2, x1, x0] = out_features[-3:] # The last 3 features
 
         # node x3
         x13 = self.bu_conv13(x1)

@@ -200,15 +200,19 @@ def main():
 
     # build model
     model = build_local_model(config, device)
-    # load model paramerters
-    ckpt = torch.load(args.ckpt, map_location=device)
+
+    if args.ckpt is not None:
+        # load model paramerters
+        ckpt = torch.load(args.ckpt, map_location=device)
+        model.eval()
+        if 'model' in ckpt:
+            ckpt = ckpt['model']
+        model.load_state_dict(ckpt, strict=True)
+        logger.info(f'loading checkpoint from {args.ckpt}.')
+    else:
+        logger.warning('No ckpt path, using random initialized model.')
 
     model.eval()
-    if 'model' in ckpt:
-        ckpt = ckpt['model']
-    model.load_state_dict(ckpt, strict=True)
-    logger.info(f'loading checkpoint from {args.ckpt}.')
-
     model = replace_module(model, nn.SiLU, SiLU)
 
     for layer in model.modules():
