@@ -14,9 +14,9 @@ English | [简体中文](README_cn.md)
 ## Changes 🔥
 Added code from RepViT, MMSegmentation and MMCV to support training detection and segmentation heads using common RepViT backbone in DAMO-YOLO pipeline.
 Citing awesome repositories that helped make this possible:
-[![RepViT](https://github.com/THU-MIG/RepViT)]
-[![MMCV](https://github.com/open-mmlab/mmcv)]
-[![MMSegmentation](https://github.com/open-mmlab/mmsegmentation)]
+* [RepViT](https://github.com/THU-MIG/RepViT)
+* [MMCV](https://github.com/open-mmlab/mmcv)
+* [MMSegmentation](https://github.com/open-mmlab/mmsegmentation)
 
 
 ## Introduction
